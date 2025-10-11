@@ -1,15 +1,34 @@
 // Koniecznie trzeba opisać co oznaczają te OUT i BTN, a jeszcze lepiej je ponazywać
-// np. OUT1_PIN -> PIN_HEADLIGHT, BTN1 -> BTN_HEADLIGHT
+//outputs
+//OUT1 left turn sigbal
+//OUT2 right turn signal
+//OUT3 high-low beam
+//OUT4 wiper on-off
+//OUT5 wiper speed +
+//OUT6 wiper speed -
+//OUT7 phone up
+//OUT78 phone down
+
 #define OUT1_PIN 2
 #define OUT2_PIN 3
-#define OUT3_PIN 4
 #define OUT4_PIN 5
 #define OUT5_PIN 6
 #define OUT6_PIN 7
 #define OUT7_PIN 8
 #define OUT8_PIN 9
 
+//resistive keyboard input
 #define BUTTON_PIN 0
+
+//buttons
+//BTN1-left turn sigbal
+//BTN2-right turn signal
+//BTN3-high-low beam
+//BTN4 wiper on-off
+//BTN5 wiper speed +
+//BTN5 wiper speed -
+//BTN7 phone up
+//BTN8 phone down
 
 #define BTN_NONE 0
 #define BTN1 1
@@ -28,7 +47,7 @@ void setup() { Serial.begin(9600);}
 int getBtn() {
   buttonValue = analogRead(BUTTON_PIN);
 //  Serial.println(buttonValue);
-
+//measured voltage values ​​for individual buttons
   if (buttonValue == 0) { return BTN_NONE; }
   if (buttonValue > 4 && buttonValue < 8) { return BTN2; }
   if (buttonValue > 22 && buttonValue < 28) { return BTN3; }
