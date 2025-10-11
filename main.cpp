@@ -70,10 +70,15 @@ void loop() {
       // zapamiętujemy nowy stan jako bieżący stan
       btn = newBtn;
     }
-    if (buttonValue > 81 && buttonValue < 84) {digitalWrite(out7Pin,HIGH);}
-    else {digitalWrite(out7Pin,LOW);}
-    if (buttonValue > 16 && buttonValue < 18) {digitalWrite(out8Pin,HIGH);}
-    else {digitalWrite(out8Pin,LOW);
+    if (buttonValue > 81 && buttonValue < 84) {
+      digitalWrite(OUT7_PIN, HIGH);
+    } else {
+      digitalWrite(OUT7_PIN, LOW);
+    }
+    if (buttonValue > 16 && buttonValue < 18) {
+      digitalWrite(OUT8_PIN, HIGH);
+    } else {
+      digitalWrite(OUT8_PIN, LOW);
     }
   }
 }
