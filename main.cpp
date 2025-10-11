@@ -1,13 +1,12 @@
-int out1Pin = 2;
-int out2Pin = 3;
-int out3Pin = 4;
-int out4Pin = 5;
-int out5Pin = 6;
-int out6Pin = 7;
-int out7Pin = 8;
-int out8Pin = 9;
-int buttonPin = 0;
-int buttonValue;
+#define OUT1_PIN 2
+#define OUT2_PIN 3
+#define OUT3_PIN 4
+#define OUT4_PIN 5
+#define OUT5_PIN 6
+#define OUT6_PIN 7
+#define OUT7_PIN 8
+#define OUT8_PIN 9
+#define BUTTON_PIN 0
 
 #define BTN_NONE 0
 #define BTN1 1
@@ -19,11 +18,12 @@ int buttonValue;
 #define BTN7 7
 #define BTN8 8
 
+int buttonValue;
 
 void setup() { Serial.begin(9600);}
 
 int getBtn() {
-  buttonValue = analogRead(buttonPin);
+  buttonValue = analogRead(BUTTON_PIN);
 //  Serial.println(buttonValue);
 
   if (buttonValue == 0) {return BTN1;}
