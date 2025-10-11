@@ -45,7 +45,42 @@ int buttonValue;
 void setup() { Serial.begin(9600);}
 
 int getBtn() {
-  buttonValue = analogRead(BUTTON_PIN);
+  int adcValue = analogRead(BUTTON_PIN);
+  if (adcValue > 4 && adcValue < 8) { return BTN2; }
+  else if (adcValue > 22 && adcValue < 28) { return BTN3; }
+  else if (adcValue > 8 && adcValue < 13) { return BTN4; }
+  else if (adcValue > 52 && adcValue < 57) { return BTN5; }
+  else if (adcValue > 129 && adcValue < 134) { return BTN6; }
+  else if (adcValue > 80 && adcValue < 85) { return BTN7; }
+  else if (adcValue > 15 && adcValue < 20) { return BTN8; }
+
+  return BTN_NONE;
+}
+
+int getDebouncedBtn() {
+  // to jest stan "stały", czyli po deobuncingu (min 50ms), static to zmienne których wartość
+  // jest zachowywana pomiędzy wywołaniami funkcji
+  static int currentButton = BTN_NONE;
+  // tu będziemy zapisywać stan "chwilowy", taki stan przechodzi
+  // do stanu stałego jeśli się nie zmieni przez 50ms (debouncing)
+  static int debouncingButton = 0;
+  static int firstSeen = 0;
+
+  int buttonValue = getBtn();
+  if (buttonValue != debouncingButton) {
+    // zmiana przycisku, resetujemy licznik czasu
+    firstSeen = millis();
+    debouncingButton = buttonValue;
+    // nie uzysknęliśmy jeszcze stabilnego stanu
+  } else if (millis() - firstSeen > 50) {
+    // minęło 50ms, przycisk się nie zmienił, więc
+    // uzyskaliśmy stabilny stan
+    currentButton = debouncingButton;
+  }
+
+  return currentButton;
+}
+
 //  Serial.println(buttonValue);
 //measured voltage values ​​for individual buttons
   if (buttonValue == 0) { return BTN_NONE; }
@@ -65,7 +100,7 @@ void loop() {
   unsigned long start = millis();
   while (true) {
     // tu w pętli sprawdzamy stan przycisków i czekamy na zmianę
-    int newBtn = getBtn();
+    int newBtn = getDebouncedBtn();
     // wykrywajmy zmianę stanu przycisków
     if (newBtn != btn) {
       // jeśli do tej pory jakiś przycisk był wciśnięty
