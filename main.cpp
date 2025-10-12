@@ -1,46 +1,6 @@
-// Koniecznie trzeba opisać co oznaczają te OUT i BTN, a jeszcze lepiej je ponazywać
-//outputs
-//TURN_LEFT left turn sigbal
-//TURN_RIGHT right turn signal
-//OUT3 high-low beam
-//OUT4 wiper on-off
-//OUT5 wiper speed +
-//OUT6 wiper speed -
-//OUT7 phone up
-//OUT78 phone down
 
-#define OUTPUT_TURN_LEFT 2
-#define OUTPUT_TURN_RIGHT 3
-#define OUT4_PIN 5
-#define OUT5_PIN 6
-#define OUT6_PIN 7
-#define OUT7_PIN 8
-#define OUT8_PIN 9
-
-//resistive keyboard input
-#define BUTTON_PIN 0
-
-//buttons
-//BTN_TURN_LEFT-left turn sigbal
-//BTN_TURN_RIGHT-right turn signal
-//BTN3-high-low beam
-//BTN4 wiper on-off
-//BTN5 wiper speed +
-//BTN5 wiper speed -
-//BTN7 phone up
-//BTN8 phone down
-
-#define BTN_NONE 0
-#define BTN_TURN_LEFT 1
-#define BTN_TURN_RIGHT 2
-#define BTN3 3
-#define BTN4 4
-#define BTN5 5
-#define BTN6 6
-#define BTN7 7
-#define BTN8 8
-
-#define INPUT_WHEEL_ROT_SENSOR 3
+#include <Arduino.h>
+#include "definitions.h"
 
 void setup() {
   Serial.begin(9600);
@@ -53,7 +13,9 @@ void setup() {
 
 int getBtn() {
   int adcValue = analogRead(BUTTON_PIN);
-  if (adcValue > 4 && adcValue < 8) { return BTN_TURN_RIGHT; }
+
+  if (adcValue > BTN_TURN_LEFT_ADC_MIN && adcValue < BTN_TURN_LEFT_ADC_MAX) { return BTN_TURN_LEFT; }
+  else if (adcValue > BTN_TURN_RIGHT_ADC_MIN && adcValue < BTN_TURN_RIGHT_ADC_MAX) { return BTN_TURN_RIGHT; }
   else if (adcValue > 22 && adcValue < 28) { return BTN3; }
   else if (adcValue > 8 && adcValue < 13) { return BTN4; }
   else if (adcValue > 52 && adcValue < 57) { return BTN5; }
@@ -73,7 +35,7 @@ int getDebouncedBtn() {
   // tu będziemy zapisywać stan "chwilowy", taki stan przechodzi
   // do stanu stałego jeśli się nie zmieni przez 50ms (debouncing)
   static int debouncingButton = 0;
-  static int firstSeen = 0;
+  static unsigned long firstSeen = 0;
 
   int buttonValue = getBtn();
   if (buttonValue != debouncingButton) {
@@ -90,30 +52,21 @@ int getDebouncedBtn() {
   return currentButton;
 }
 
-//  Serial.println(buttonValue);
-//measured voltage values ​​for individual buttons
-  if (buttonValue == 0) { return BTN_NONE; }
-  if (buttonValue > 4 && buttonValue < 8) { return BTN_TURN_RIGHT; }
-  if (buttonValue > 22 && buttonValue < 28) { return BTN3; }
-  if (buttonValue > 8 && buttonValue < 13) { return BTN4; }
-  if (buttonValue > 52 && buttonValue < 57) { return BTN5; }
-  if (buttonValue > 129 && buttonValue < 134) { return BTN6; }
-  if (buttonValue > 80 && buttonValue < 85) { return BTN7; }
-  if (buttonValue > 15 && buttonValue < 20) { return BTN8; }
-
-  return BTN_NONE;
-}
-
 void loop() {
-  int btn = BTN_NONE;
-  unsigned long start = millis();
-  unsigned long turnLeftStopTime = 0;
-  unsigned long turnRightStopTime = 0;
-  while (true) {
+  static int btn = BTN_NONE;
+  static unsigned long start = millis();
+  static unsigned long turnLeftStopTime = 0;
+  static unsigned long turnRightStopTime = 0;
+
     // tu w pętli sprawdzamy stan przycisków i czekamy na zmianę
     int newBtn = getDebouncedBtn();
     // wykrywajmy zmianę stanu przycisków
     if (newBtn != btn) {
+      Serial.print("Button changed from ");
+      Serial.print(btn);
+      Serial.print(" to ");
+      Serial.println(newBtn);
+
       // jeśli do tej pory jakiś przycisk był wciśnięty
       if (btn != BTN_NONE) {
         // obsługa wciśnięcia przycisku
@@ -181,7 +134,7 @@ void loop() {
       // czas wyłączenia minął, wyłączamy kierunkowskaz
       digitalWrite(OUTPUT_TURN_LEFT, LOW);
       turnLeftStopTime = 0; // deaktywuj timer
-    } else (turnLeftStopTime == 0 && digitalRead(OUTPUT_TURN_LEFT) == HIGH && digitalRead(INPUT_WHEEL_ROT_SENSOR) == LOW) {
+    } else if (turnLeftStopTime == 0 && digitalRead(OUTPUT_TURN_LEFT) == HIGH && digitalRead(INPUT_WHEEL_ROT_SENSOR) == LOW) {
       // kierunkowskaz włączon długim wciśnięciem, czujnik wykrył obrót koła, wyłącz za sekundę
       turnLeftStopTime = millis() + 1000;
     }
@@ -191,5 +144,5 @@ void loop() {
     //   digitalWrite(OUTPUT_TURN_RIGHT, LOW);
     //   turnRightStopTime = 0; // deaktywuj timer
     // }
-  }
+  //}
 }

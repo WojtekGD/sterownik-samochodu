@@ -1,0 +1,46 @@
+# Używa stylu LLVM jako bazy.
+# LLVM jest zbalansowany, czytelny i szeroko stosowany.
+# Inne popularne style to: Google, Chromium, Mozilla, WebKit
+Style: LLVM
+
+# --- KLUCZOWE PARAMETRY ---
+
+# 1. LIMIT KOLUMN
+# Maksymalna długość linii. Jeśli linia przekroczy ten limit,
+# ClangFormat postara się ją złamać. 0 oznacza brak limitu (niezalecane).
+ColumnLimit: 120
+
+# 2. KLAMRY (BRACES)
+# Określa, gdzie umieszczane są klamry po instrukcjach (np. if, for, funkcja).
+# "Allman" / "Stroustrup": klamry w nowej linii (np. LLVM, Stroustrup)
+# "Attach": klamry w tej samej linii (np. Google, Java)
+BreakBeforeBraces: Allman
+
+# 3. WCIĘCIA
+# Liczba spacji używanych do wcięcia.
+IndentWidth: 4
+TabWidth: 4
+
+# Czy używać spacji zamiast tabulatorów do wcięć.
+UseTab: Never
+
+# --- DODATKOWE USTAWIENIA DLA CZYTELNOŚCI ---
+
+# Wcięcie po modyfikatorze dostępu (public:, private:).
+# None: nic nie wcięte
+AccessModifierOffset: -4
+
+# Dodaje spacje wewnątrz nawiasów (np. ( a + b ) zamiast (a + b)).
+# False jest standardem dla LLVM.
+SpaceInParens: false
+
+# Wyrównywanie parametrów funkcji w nowej linii.
+# True: parametry są wyrównywane, aby kod wyglądał schludnie.
+AlignConsecutiveParameters: true
+
+# Usuwa spację przed otwierającym nawiasem (np. if(a) zamiast if (a)).
+# False jest standardem i zwiększa czytelność.
+SpaceBeforeParens: Never
+
+AllowShortIfStatementsOnASingleLine: All
+AllowShortBlocksOnASingleLine: Always
